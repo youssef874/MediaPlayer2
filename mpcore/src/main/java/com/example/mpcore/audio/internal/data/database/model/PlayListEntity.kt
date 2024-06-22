@@ -1,4 +1,4 @@
-package com.example.mpstorage.database.internal.entity
+package com.example.mpcore.audio.internal.data.database.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

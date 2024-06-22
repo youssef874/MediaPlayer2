@@ -2,20 +2,22 @@ package com.example.mpcore.audio.internal.data.database
 
 import com.example.mpcore.audio.api.exception.AddAudioToPlayListThatAlreadyExist
 import com.example.mpcore.audio.internal.data.database.model.AudioEntity
+import com.example.mpcore.audio.internal.data.database.model.PlayListEntity
 import com.example.mpcore.logger.api.data.MPLoggerLevel
 import com.example.mpcore.logger.internal.MPLoggerConfiguration
-import com.example.mpstorage.database.internal.entity.PlayListEntity
 import com.example.mpstorage.database.internal.entity.PlaylistSongCrossRef
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 internal class PlayListDatabaseDataProviderImpl(
     private val playListDao: IPlayListDao,
-    private val audioDao: AudioDao
-): IPlayListDatabaseDataProvider {
+    private val audioDao: AudioDao,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
+) : IPlayListDatabaseDataProvider {
 
-    companion object{
+    companion object {
         private const val CLASS_NAME = "PlayListDatabaseDataProviderImpl"
         private const val TAG = "DATA_BASE"
     }
@@ -28,18 +30,18 @@ internal class PlayListDatabaseDataProviderImpl(
             msg = "attach audioId: $audioId to playListEntity: $playListEntity",
             logLevel = MPLoggerLevel.INFO
         )
-        withContext(Dispatchers.IO){
+        withContext(dispatcher) {
             val playlistWithSongs = audioDao.getListOfAudioForPlayList(playListEntity.id)
             playlistWithSongs?.songs?.firstOrNull { it.id == audioId }?.let {
-                throw AddAudioToPlayListThatAlreadyExist(audioId,playListEntity.name)
+                throw AddAudioToPlayListThatAlreadyExist(audioId, playListEntity.name)
             }
             val playList = playListDao.getPlayListById(playListEntity.id)
             var id: Long? = null
-            if (playList == null){
+            if (playList == null) {
                 id = playListDao.insert(playListEntity)
             }
             playListDao.addPlaylistSongCrossRef(
-                PlaylistSongCrossRef(playListId = id?:playListEntity.id, songId = audioId)
+                PlaylistSongCrossRef(playListId = id ?: playListEntity.id, songId = audioId)
             )
         }
     }
@@ -52,7 +54,7 @@ internal class PlayListDatabaseDataProviderImpl(
             msg = "audioId: $playListId",
             logLevel = MPLoggerLevel.INFO
         )
-        return withContext(Dispatchers.IO){
+        return withContext(dispatcher) {
             audioDao.getListOfAudioForPlayList(playListId = playListId)?.songs?.firstOrNull()
         }
     }
@@ -65,7 +67,9 @@ internal class PlayListDatabaseDataProviderImpl(
             msg = "audioId: $playListId",
             logLevel = MPLoggerLevel.INFO
         )
-        return audioDao.getListOfAudioForPlayList(playListId)?.songs?: emptyList()
+        return withContext(dispatcher) {
+            audioDao.getListOfAudioForPlayList(playListId)?.songs ?: emptyList()
+        }
     }
 
     override suspend fun add(data: PlayListEntity): Long {
@@ -76,7 +80,7 @@ internal class PlayListDatabaseDataProviderImpl(
             msg = "add data: $data",
             logLevel = MPLoggerLevel.INFO
         )
-        return withContext(Dispatchers.IO){
+        return withContext(dispatcher) {
             playListDao.insert(data)
         }
     }
@@ -89,7 +93,7 @@ internal class PlayListDatabaseDataProviderImpl(
             msg = "update data: $data",
             logLevel = MPLoggerLevel.INFO
         )
-        return withContext(Dispatchers.IO){
+        return withContext(dispatcher) {
             playListDao.update(data) > 0
         }
     }
@@ -102,7 +106,7 @@ internal class PlayListDatabaseDataProviderImpl(
             msg = "add data: $data",
             logLevel = MPLoggerLevel.INFO
         )
-        withContext(Dispatchers.IO){
+        withContext(dispatcher) {
             playListDao.delete(data)
         }
     }
@@ -115,7 +119,7 @@ internal class PlayListDatabaseDataProviderImpl(
             msg = "id: $id",
             logLevel = MPLoggerLevel.INFO
         )
-        return withContext(Dispatchers.IO){
+        return withContext(dispatcher) {
             playListDao.getPlayListById(id)
         }
     }
@@ -136,10 +140,10 @@ internal class PlayListDatabaseDataProviderImpl(
             className = CLASS_NAME,
             tag = TAG,
             methodName = "getAll",
-            msg = "all playlist",
+            msg = "return all playlist",
             logLevel = MPLoggerLevel.INFO
         )
-        return withContext(Dispatchers.IO){
+        return withContext(dispatcher) {
             playListDao.getAll()
         }
     }
@@ -163,7 +167,7 @@ internal class PlayListDatabaseDataProviderImpl(
             msg = "all playlist",
             logLevel = MPLoggerLevel.INFO
         )
-        withContext(Dispatchers.IO){
+        withContext(dispatcher) {
             playListDao.deleteAll()
         }
     }

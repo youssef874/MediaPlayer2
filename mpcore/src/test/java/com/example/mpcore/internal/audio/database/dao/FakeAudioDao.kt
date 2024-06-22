@@ -2,8 +2,8 @@ package com.example.mpcore.internal.audio.database.dao
 
 import com.example.mpcore.audio.internal.data.database.AudioDao
 import com.example.mpcore.audio.internal.data.database.model.AudioEntity
-import com.example.mpstorage.database.internal.entity.PlayListEntity
-import com.example.mpstorage.database.internal.entity.PlaylistWithSongs
+import com.example.mpcore.audio.internal.data.database.model.PlayListEntity
+import com.example.mpcore.audio.internal.data.database.model.PlaylistWithSongs
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.channelFlow
 import kotlinx.coroutines.flow.flow

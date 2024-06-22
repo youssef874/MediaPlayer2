@@ -1,6 +1,6 @@
 package com.example.mpcore.audio.internal.data.database
 
-internal interface IDatabaseMigrator {
+internal fun interface IDatabaseMigrator {
 
     fun addMigration()
 }

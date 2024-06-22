@@ -3,6 +3,7 @@ package com.example.mpstorage.database.internal.entity
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import com.example.mpcore.audio.internal.data.database.model.AudioEntity
+import com.example.mpcore.audio.internal.data.database.model.PlayListEntity
 
 @Entity( primaryKeys = [PlayListEntity.ID,AudioEntity.ID])
 data class PlaylistSongCrossRef(

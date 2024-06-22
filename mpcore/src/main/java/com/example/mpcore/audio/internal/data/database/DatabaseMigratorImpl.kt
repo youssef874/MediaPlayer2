@@ -8,7 +8,7 @@ import com.example.mpcore.audio.internal.data.datastore.IAudioDatastoreManger
 import com.example.mpcore.common.internal.SDKComponent
 import com.example.mpcore.logger.api.data.MPLoggerLevel
 import com.example.mpcore.logger.internal.MPLoggerConfiguration
-import com.example.mpstorage.database.internal.entity.PlayListEntity
+import com.example.mpcore.audio.internal.data.database.model.PlayListEntity
 import com.example.mpstorage.database.internal.entity.PlaylistSongCrossRef
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

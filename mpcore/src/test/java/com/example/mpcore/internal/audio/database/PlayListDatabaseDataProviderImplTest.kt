@@ -6,13 +6,10 @@ import com.example.mpcore.audio.internal.data.database.PlayListDatabaseDataProvi
 import com.example.mpcore.audio.internal.data.database.model.AudioEntity
 import com.example.mpcore.internal.audio.database.dao.FakeAudioDao
 import com.example.mpcore.internal.audio.database.dao.FakePlayListDao
-import com.example.mpstorage.database.internal.entity.PlayListEntity
-import kotlinx.coroutines.CoroutineScope
+import com.example.mpcore.audio.internal.data.database.model.PlayListEntity
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
-import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith

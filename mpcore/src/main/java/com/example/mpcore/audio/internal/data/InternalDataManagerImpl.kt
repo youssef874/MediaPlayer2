@@ -3,10 +3,9 @@ package com.example.mpcore.audio.internal.data
 import android.content.Context
 import com.example.mpcore.audio.api.MPApiError
 import com.example.mpcore.audio.api.data.MPApiResult
-import com.example.mpcore.audio.api.exception.MissingPermissionException
 import com.example.mpcore.audio.api.data.model.MPAudio
+import com.example.mpcore.audio.api.exception.MissingPermissionException
 import com.example.mpcore.audio.internal.data.database.IAudioDatabaseDataProvider
-import com.example.mpcore.audio.internal.data.database.model.AudioEntity
 import com.example.mpcore.audio.internal.data.dataprovider.IAudioContentProviderDataManager
 import com.example.mpcore.audio.internal.data.datastore.IAudioDataStoreController
 import com.example.mpcore.audio.internal.data.datastore.IAudioDatastoreManger
@@ -32,6 +31,7 @@ internal class InternalDataManagerImpl(
     companion object {
         private const val CLASS_NAME = "InternalDataManagerImpl"
         private const val TAG = "DATA"
+        private const val SYNCHRONIZATION_FAILED = "Synchronization failed"
     }
 
     init {
@@ -53,7 +53,7 @@ internal class InternalDataManagerImpl(
                 }
             }
         } catch (_: MissingPermissionException) {
-
+            //Do nothing
         }
     }
 
@@ -73,22 +73,22 @@ internal class InternalDataManagerImpl(
     override suspend fun getAllAudio(): MPApiResult<List<MPAudio>> {
         try {
             val result = synchronizer.synchronize(context)
-            if (!result) {
+            return if (!result) {
                 MPLoggerConfiguration.DefaultBuilder().log(
                     className = CLASS_NAME,
                     tag = TAG,
                     methodName = "getAllAudio",
                     logLevel = MPLoggerLevel.ERROR,
-                    msg = "synchronization failed"
+                    msg = "synchronization did not complete"
                 )
-                return MPApiResult.Error(
+                 MPApiResult.Error(
                     MPApiError(
                         errorCode = DataCode.SYNCHRONIZATION_NOT_COMPLETE,
-                        errorMessage = "synchronizationFailed"
+                        errorMessage = SYNCHRONIZATION_FAILED
                     )
                 )
             } else {
-                return MPApiResult.Success(audioDatabase.getAll().map { it.toMPAudio() })
+                 MPApiResult.Success(audioDatabase.getAll().map { it.toMPAudio() })
             }
         } catch (e: MissingPermissionException) {
             MPLoggerConfiguration.DefaultBuilder().log(
@@ -118,9 +118,9 @@ internal class InternalDataManagerImpl(
                         tag = TAG,
                         methodName = "observeAllAudio",
                         logLevel = MPLoggerLevel.ERROR,
-                        msg = "synchronization failed"
+                        msg = "synchronization did not complete"
                     )
-                    throw IllegalAccessException("synchronization failed")
+                    throw IllegalAccessException(SYNCHRONIZATION_FAILED)
                 }
             }
             return audioDatabase.observeAll().map { value ->

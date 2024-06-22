@@ -7,9 +7,9 @@ import androidx.room.Query
 import androidx.room.Transaction
 import com.example.mpcore.audio.internal.data.database.model.AudioEntity
 import com.example.mpcore.common.internal.IBaseDao
-import com.example.mpstorage.database.internal.entity.PlayListEntity
+import com.example.mpcore.audio.internal.data.database.model.PlayListEntity
 import com.example.mpstorage.database.internal.entity.PlaylistSongCrossRef
-import com.example.mpstorage.database.internal.entity.SongWithPlaylists
+import com.example.mpcore.audio.internal.data.database.model.SongWithPlaylists
 import kotlinx.coroutines.flow.Flow
 
 @Dao

@@ -6,11 +6,11 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.example.mpcore.audio.internal.data.database.model.AudioEntity
 import com.example.mpcore.audio.internal.data.datastore.factory.AudioDatastoreDataManagerFactory
-import com.example.mpstorage.database.internal.entity.PlayListEntity
+import com.example.mpcore.audio.internal.data.database.model.PlayListEntity
 import com.example.mpstorage.database.internal.entity.PlaylistSongCrossRef
 
 @Database(
-    entities = [AudioEntity::class,PlayListEntity::class,PlaylistSongCrossRef::class],
+    entities = [AudioEntity::class, PlayListEntity::class,PlaylistSongCrossRef::class],
     version = MPDatabase.DATA_BASE_VERSION,
     exportSchema = true
 )

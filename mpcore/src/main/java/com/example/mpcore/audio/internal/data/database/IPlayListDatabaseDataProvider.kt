@@ -2,7 +2,7 @@ package com.example.mpcore.audio.internal.data.database
 
 import com.example.mpcore.audio.internal.data.database.model.AudioEntity
 import com.example.mpcore.common.internal.IBaseDatabaseDataProvider
-import com.example.mpstorage.database.internal.entity.PlayListEntity
+import com.example.mpcore.audio.internal.data.database.model.PlayListEntity
 
 internal interface IPlayListDatabaseDataProvider: IBaseDatabaseDataProvider<PlayListEntity> {
 

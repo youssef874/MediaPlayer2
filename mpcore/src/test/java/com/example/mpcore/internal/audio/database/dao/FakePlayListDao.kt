@@ -1,9 +1,9 @@
 package com.example.mpcore.internal.audio.database.dao
 
 import com.example.mpcore.audio.internal.data.database.IPlayListDao
-import com.example.mpstorage.database.internal.entity.PlayListEntity
+import com.example.mpcore.audio.internal.data.database.model.PlayListEntity
 import com.example.mpstorage.database.internal.entity.PlaylistSongCrossRef
-import com.example.mpstorage.database.internal.entity.SongWithPlaylists
+import com.example.mpcore.audio.internal.data.database.model.SongWithPlaylists
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

@@ -1,9 +1,9 @@
-package com.example.mpstorage.database.internal.entity
+package com.example.mpcore.audio.internal.data.database.model
 
 import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
-import com.example.mpcore.audio.internal.data.database.model.AudioEntity
+import com.example.mpstorage.database.internal.entity.PlaylistSongCrossRef
 
 
 internal data class PlaylistWithSongs(

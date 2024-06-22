@@ -3,12 +3,14 @@ package com.example.mpcore.audio.internal.data.database
 import com.example.mpcore.audio.internal.data.database.model.AudioEntity
 import com.example.mpcore.logger.api.data.MPLoggerLevel
 import com.example.mpcore.logger.internal.MPLoggerConfiguration
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
 internal class AudioDatabaseProviderImpl(
-    private val audioDao: AudioDao
+    private val audioDao: AudioDao,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ): IAudioDatabaseDataProvider {
 
     companion object{
@@ -24,15 +26,17 @@ internal class AudioDatabaseProviderImpl(
             msg = "isFavorite: $isFavorite, audioId: $audioId",
             logLevel = MPLoggerLevel.DEBUG
         )
-        val result = audioDao.changeAudioFavoriteStatus(isFavorite, audioId)
-        MPLoggerConfiguration.DefaultBuilder().log(
-            className = CLASS_NAME,
-            tag = TAG,
-            methodName = "changeAudioFavoriteStatus",
-            msg = "update result: $result",
-            logLevel = MPLoggerLevel.DEBUG
-        )
-        return if (result == 1) true else false
+        return withContext(dispatcher){
+            val result = audioDao.changeAudioFavoriteStatus(isFavorite, audioId)
+            MPLoggerConfiguration.DefaultBuilder().log(
+                className = CLASS_NAME,
+                tag = TAG,
+                methodName = "changeAudioFavoriteStatus",
+                msg = "update result: $result",
+                logLevel = MPLoggerLevel.DEBUG
+            )
+            result == 1
+        }
     }
 
     override suspend fun add(data: AudioEntity): Long {
@@ -43,7 +47,7 @@ internal class AudioDatabaseProviderImpl(
             msg = "try to add $data",
             logLevel = MPLoggerLevel.DEBUG
         )
-        return withContext(Dispatchers.IO){
+        return withContext(dispatcher){
             audioDao.insert(data)
         }
     }
@@ -56,7 +60,7 @@ internal class AudioDatabaseProviderImpl(
             msg = "try to update with $data",
             logLevel = MPLoggerLevel.DEBUG
         )
-        return withContext(Dispatchers.IO){
+        return withContext(dispatcher){
              audioDao.update(data) > 0
         }
     }
@@ -69,7 +73,7 @@ internal class AudioDatabaseProviderImpl(
             msg = "try to delete $data",
             logLevel = MPLoggerLevel.DEBUG
         )
-        withContext(Dispatchers.IO){
+        withContext(dispatcher){
             audioDao.delete(data)
         }
     }
@@ -82,7 +86,7 @@ internal class AudioDatabaseProviderImpl(
             msg = "id: $id",
             logLevel = MPLoggerLevel.DEBUG
         )
-        return withContext(Dispatchers.IO){
+        return withContext(dispatcher){
             audioDao.getById(id)
         }
     }
@@ -106,7 +110,7 @@ internal class AudioDatabaseProviderImpl(
             msg = "try to get all audio",
             logLevel = MPLoggerLevel.DEBUG
         )
-        return withContext(Dispatchers.IO){
+        return withContext(dispatcher){
             audioDao.getAll()
         }
     }
@@ -123,7 +127,7 @@ internal class AudioDatabaseProviderImpl(
     }
 
     override suspend fun deleteAll() {
-        withContext(Dispatchers.IO){
+        withContext(dispatcher){
             audioDao.deleteAll()
         }
     }

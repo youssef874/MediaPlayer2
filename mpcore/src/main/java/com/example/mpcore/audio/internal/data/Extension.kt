@@ -4,7 +4,7 @@ import android.net.Uri
 import com.example.mpcore.audio.api.data.model.MPAudio
 import com.example.mpcore.audio.api.data.model.MPPlayList
 import com.example.mpcore.audio.internal.data.database.model.AudioEntity
-import com.example.mpstorage.database.internal.entity.PlayListEntity
+import com.example.mpcore.audio.internal.data.database.model.PlayListEntity
 
 
 internal fun AudioEntity.toMPAudio(): MPAudio = MPAudio(

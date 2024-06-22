@@ -8,12 +8,13 @@ import com.example.mpcore.audio.api.exception.AddAudioToPlayListThatAlreadyExist
 import com.example.mpcore.audio.internal.data.database.IPlayListDatabaseDataProvider
 import com.example.mpcore.logger.api.data.MPLoggerLevel
 import com.example.mpcore.logger.internal.MPLoggerConfiguration
-import com.example.mpstorage.database.internal.entity.PlayListEntity
+import com.example.mpcore.audio.internal.data.database.model.PlayListEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import java.sql.SQLException
 
+//TODO add some unit test
 internal class InternalPlayListDataManagerImpl(
     private val playListDatabaseDataProviderImpl: IPlayListDatabaseDataProvider
 ): IInternalPlayListDataManager {
