@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">MediaPlayer</string>
+    <string name="permission_needed_string">Permission needed</string>
+    <string name="we_need_to_give_list_of_songs_string">we need %1$s to give list of songs</string>
+    <string name="default_failed_fetch_string">Sorry we could not fetch you a song list for you</string>
+    <string name="no_playlist_text_string">You don\'t have playlist yet please create one</string>
+    <string name="playlist_name_string">"playList %1$s "</string>
+    <string name="add_item_title_string">Add %1$s</string>
+    <string name="name_add_item_label">%1$s name</string>
+    <string name="cancel_string">Cancel</string>
+    <string name="add_string">Add</string>
+    <string name="playlist_string">playList</string>
+    <string name="added_song_toast_message">Song added to playlist</string>
+    <string name="added_song_to_playlist_error_string">This song already added to the requested playlist</string>
+    <string name="add_to_play_list_error_string">Could not add this song to the requested playlist</string>
+    <string name="add_song_to_playlist_success_msg">song added successfully to requested playlist</string>
+</resources>
