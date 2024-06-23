@@ -7,7 +7,6 @@ import com.example.mpcore.common.internal.SDKComponent
 import com.example.mpcore.logger.api.data.MPLoggerLevel
 import com.example.mpcore.logger.internal.MPLoggerConfiguration
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
@@ -21,13 +20,9 @@ internal class AudioPlayerMangerImpl(
         private const val TAG = "AUDIO_PLAYER"
     }
 
-    private var audioProgressJob: Job? = null
-
     init {
         mediaPlayer.onAudioProgressionListener {
-            audioProgressJob?.cancel()
-            audioProgressJob = null
-            audioProgressJob = SDKComponent.CoroutineComponent.sdkCoroutineScope.launch(Dispatchers.IO) {
+            SDKComponent.CoroutineComponent.sdkCoroutineScope.launch(Dispatchers.IO) {
                 audioDataStoreManger.getAudioProgression().updateValue(it)
             }
         }

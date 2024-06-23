@@ -36,8 +36,10 @@ class SynchronizationManagerImplTest {
             }
 
         })
+        FakeAudioDatastoreManger.getIsSdkInitialized().updateValue(false)
         synchronizationManagerImpl.synchronize(FakeIDataSynchronizeFailed,FakeDataSynchronizeWitSuccess)
-        assert(!deferred.await())
+        val result = deferred.await()
+        assert(!result)
         assert(!synchronizationManagerImpl.isSynchronized())
     }
 

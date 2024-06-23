@@ -4,13 +4,18 @@ import com.example.mpcore.audio.api.data.MPApiResult
 import com.example.mpcore.audio.api.data.model.MPAudio
 import com.example.mpcore.audio.internal.data.DataCode
 import com.example.mpcore.audio.internal.data.InternalDataManagerImpl
+import com.example.mpcore.internal.audio.database.dao.FakeAudioDao
 import com.example.mpcore.internal.audio.synchronize.contentProvider.FakeAudioContentProviderDataManagerWithException
 import com.example.mpcore.internal.audio.synchronize.contentProvider.FakeEmptyAudioContentProvider
 import com.example.mpcore.internal.audio.synchronize.contentProvider.FakeNotEmptyAudioContentProvider
 import com.example.mpcore.internal.audio.synchronize.database.FakeAudioDatabaseDataProvider
 import com.example.mpcore.internal.audio.synchronize.datastore.FakeAudioDatastoreManger
 import com.example.mpcore.internal.audio.synchronize.synchronize.FakeMPSynchronizeSuccess
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -21,22 +26,32 @@ class InternalDataManagerImplTest {
 
     private val context = RuntimeEnvironment.getApplication().applicationContext
     private lateinit var internalDataManagerImpl: InternalDataManagerImpl
+    private val fakeAudioDatabaseDataProvider = FakeAudioDatabaseDataProvider(FakeAudioDao)
+
+    @Before
+    fun setup(){
+        CoroutineScope(Dispatchers.IO).launch{
+            fakeAudioDatabaseDataProvider.deleteAll()
+        }
+    }
 
     @Test
     fun `when content provider had data and have permission and synchronization completed expect getAllAudio to get list not empty`()= runTest {
         internalDataManagerImpl = InternalDataManagerImpl(
             FakeMPSynchronizeSuccess(
-                FakeAudioDatabaseDataProvider,
+                fakeAudioDatabaseDataProvider,
                 FakeNotEmptyAudioContentProvider,
                 FakeAudioDatastoreManger
             ),
-            FakeAudioDatabaseDataProvider,
+            fakeAudioDatabaseDataProvider,
             FakeNotEmptyAudioContentProvider,
             FakeAudioDatastoreManger,context
         )
+        FakeNotEmptyAudioContentProvider.removeChangesIfExist()
         val result = internalDataManagerImpl.getAllAudio()
         assert(result is MPApiResult.Success)
         val list = (result as MPApiResult.Success<List<MPAudio>>).data
+        println("$list")
         assert(list.isNotEmpty())
         assert(list.first().album == "album1")
         assert(list.last().album == "album2")
@@ -46,17 +61,18 @@ class InternalDataManagerImplTest {
     fun `when content provider no data and have permission and synchronization completed expect getAllAudio to get empty list`()= runTest {
         internalDataManagerImpl = InternalDataManagerImpl(
             FakeMPSynchronizeSuccess(
-                FakeAudioDatabaseDataProvider,
+                fakeAudioDatabaseDataProvider,
                 FakeEmptyAudioContentProvider,
                 FakeAudioDatastoreManger
             ),
-            FakeAudioDatabaseDataProvider,
+            fakeAudioDatabaseDataProvider,
             FakeEmptyAudioContentProvider,
             FakeAudioDatastoreManger,context
         )
         val result = internalDataManagerImpl.getAllAudio()
         assert(result is MPApiResult.Success)
         val list = (result as MPApiResult.Success<List<MPAudio>>).data
+        println("list: $list")
         assert(list.isEmpty())
     }
 
@@ -64,11 +80,11 @@ class InternalDataManagerImplTest {
     fun `when content provider has data and don't have permission and synchronization completed expect getAllAudio to get error`()= runTest {
         internalDataManagerImpl = InternalDataManagerImpl(
             FakeMPSynchronizeSuccess(
-                FakeAudioDatabaseDataProvider,
+                fakeAudioDatabaseDataProvider,
                 FakeAudioContentProviderDataManagerWithException,
                 FakeAudioDatastoreManger
             ),
-            FakeAudioDatabaseDataProvider,
+            fakeAudioDatabaseDataProvider,
             FakeEmptyAudioContentProvider,
             FakeAudioDatastoreManger,context
         )
@@ -79,14 +95,14 @@ class InternalDataManagerImplTest {
     }
 
     @Test
-    fun `when content provider data changes and have permission and synchronization completed expect getAllAudio to contain the new added dat`()= runTest {
+    fun `when content provider data changes and have permission and synchronization completed expect getAllAudio to contain the new added data`()= runTest {
         internalDataManagerImpl = InternalDataManagerImpl(
             FakeMPSynchronizeSuccess(
-                FakeAudioDatabaseDataProvider,
+                fakeAudioDatabaseDataProvider,
                 FakeNotEmptyAudioContentProvider,
                 FakeAudioDatastoreManger
             ),
-            FakeAudioDatabaseDataProvider,
+            fakeAudioDatabaseDataProvider,
             FakeNotEmptyAudioContentProvider,
             FakeAudioDatastoreManger,context
         )

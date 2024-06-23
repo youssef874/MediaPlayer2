@@ -73,7 +73,7 @@ class PlaylistDaoTest {
         }
 
     @Test
-    fun `when dd playlist and not attache it to playlist expect getListOfPlayListForAudio to have an empty playlist`()=
+    fun `when add playlist and not attache it to playlist expect getListOfPlayListForAudio to have an empty playlist`()=
         runTest {
             val playListEntity = PlayListEntity(name = "playList1")
             val audio = AudioEntity(
@@ -91,4 +91,5 @@ class PlaylistDaoTest {
                 assert(result?.playLists?.isEmpty() == true)
             }
         }
+
 }

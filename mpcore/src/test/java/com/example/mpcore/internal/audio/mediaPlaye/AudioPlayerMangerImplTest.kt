@@ -3,6 +3,8 @@ package com.example.mpcore.internal.audio.mediaPlaye
 import android.net.Uri
 import com.example.mpcore.audio.internal.mediaplayer.AudioPlayerMangerImpl
 import com.example.mpcore.internal.audio.synchronize.datastore.FakeAudioDatastoreManger
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
@@ -53,28 +55,30 @@ class AudioPlayerMangerImplTest {
     fun `when call resumePlayingAudio successful expect the progress to resume too`()= runTest {
         val uri = Uri.parse("test")
         FakeMediaPlayer.int(uri, isPlaying = false, at = 10)
-        val result = audioPlayerManger.resumePlayingAudio(context)
+        val result = async { audioPlayerManger.resumePlayingAudio(context) }.await()
         val list = mutableListOf<Int>()
         assert(result)
         launch {
             val progression = audioPlayerManger.getAudioProgress()
+            delay(10)
             audioPlayerManger.observeAudioProgress().toList(list)
+            println("$list")
             assert(list.any { it>progression })
-        }
+        }.join()
     }
 
     @Test
     fun `when call pausePlayingAudio successful expect the progress to stop`() = runTest {
         val uri = Uri.parse("test")
         audioPlayerManger.playAudio(context, uri)
-        val result = audioPlayerManger.pausePlayingAudio(context)
+        val result = async { audioPlayerManger.pausePlayingAudio(context) }.await()
         assert(result)
         val list = mutableListOf<Int>()
         launch {
             val progression = audioPlayerManger.getAudioProgress()
             audioPlayerManger.observeAudioProgress().toList(list)
             assert(list.last() == progression)
-        }
+        }.join()
     }
 
     fun clean(){

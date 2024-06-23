@@ -1,87 +1,46 @@
 package com.example.mpcore.internal.audio.synchronize.database
 
+import com.example.mpcore.audio.internal.data.database.AudioDao
 import com.example.mpcore.audio.internal.data.database.IAudioDatabaseDataProvider
 import com.example.mpcore.audio.internal.data.database.model.AudioEntity
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.channelFlow
 
-internal object FakeAudioDatabaseDataProvider: IAudioDatabaseDataProvider {
-    private val dataList = mutableListOf<AudioEntity>()
-    var notify: (suspend ()->Unit)? = null
+internal class FakeAudioDatabaseDataProvider(
+    private val audioDao: AudioDao,
+): IAudioDatabaseDataProvider {
     override suspend fun changeAudioFavoriteStatus(isFavorite: Boolean, audioId: Long): Boolean {
-        dataList.firstOrNull { it.id == audioId }?.let {
-            dataList[dataList.indexOf(it)] = it.copy(isFavorite = isFavorite)
-        }
-        notify?.invoke()
-        return true
+        return audioDao.changeAudioFavoriteStatus(isFavorite, audioId) == 1
     }
 
     override suspend fun add(data: AudioEntity): Long {
-        var id: Long = 0
-        dataList.firstOrNull { it.externalId == data.externalId }?.let {
-            dataList[dataList.indexOf(it)] = data
-            id = it.id
-        }?:run {
-            id = generateId()
-            val audioEntity = data.copy(id = id)
-            dataList.add(audioEntity)
-        }
-        notify?.invoke()
-        return id
-    }
-
-    private fun generateId(): Long{
-        val copy = ArrayList(dataList)
-        return if (copy.isEmpty()){
-            0L
-        }else{
-            copy.sortBy { it.id }
-            copy.last().id+1
-        }
+        return audioDao.insert(data)
     }
 
     override suspend fun update(data: AudioEntity): Boolean {
-        dataList.firstOrNull { it.id == data.id }?.let {
-            dataList[dataList.indexOf(it)] = data
-            notify?.invoke()
-            return true
-        }?:return false
+        return audioDao.update(data) > 0
     }
 
     override suspend fun delete(data: AudioEntity) {
-        dataList.firstOrNull { it.id == data.id }?.let {
-            dataList.remove(it)
-            notify?.invoke()
-        }
+        audioDao.delete(data)
     }
 
     override suspend fun getById(id: Long): AudioEntity? {
-        return dataList.firstOrNull { it.id == id }
+        return audioDao.getById(id)
     }
 
     override fun observeById(id: Long): Flow<AudioEntity?> {
-        return channelFlow {
-            send(dataList.firstOrNull { it.id == id })
-            notify = {
-                send(dataList.firstOrNull { it.id == id })
-            }
-        }
+        return audioDao.observeById(id)
     }
 
     override suspend fun getAll(): List<AudioEntity> {
-        return ArrayList(dataList)
+        return audioDao.getAll()
     }
 
     override fun observeAll(): Flow<List<AudioEntity>> {
-        return channelFlow {
-            send(dataList)
-            notify = {
-                send(dataList)
-            }
-        }
+        return audioDao.observeAll()
     }
 
     override suspend fun deleteAll() {
-        dataList.clear()
+        audioDao.deleteAll()
     }
 }

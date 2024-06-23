@@ -14,7 +14,6 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import java.sql.SQLException
 
-//TODO add some unit test
 internal class InternalPlayListDataManagerImpl(
     private val playListDatabaseDataProviderImpl: IPlayListDatabaseDataProvider
 ): IInternalPlayListDataManager {
@@ -86,6 +85,16 @@ internal class InternalPlayListDataManagerImpl(
                 msg = "message: ${e.message}"
             )
             return MPApiResult.Error(MPApiError(DataCode.AUDIO_ALREADY_ATTACHED_TO_PLAYLIST,"$audioId already attached"))
+        }catch (e: NoSuchElementException){
+            MPLoggerConfiguration.DefaultBuilder().log(
+                className = CLASS_NAME,
+                tag = TAG,
+                methodName = "attachPlayListToAudio",
+                logLevel = MPLoggerLevel.ERROR,
+                msg = "message: ${e.message}"
+            )
+            //TODO add it to documentation
+            return MPApiResult.Error(MPApiError(DataCode.ELEMENT_NOT_FOUND,"$audioId not found add it before attache it to playlist"))
         }
     }
 

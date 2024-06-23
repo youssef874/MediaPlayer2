@@ -1,6 +1,5 @@
 package com.example.mpcore.internal.audio.synchronize.contentProvider
 
-import android.net.Uri
 import com.example.mpcore.audio.internal.data.dataprovider.IAudioContentProviderDataManager
 import com.example.mpcore.audio.internal.data.dataprovider.model.AudioDataProviderModel
 
@@ -35,7 +34,7 @@ internal object FakeNotEmptyAudioContentProvider: IAudioContentProviderDataManag
 
     fun changeData(){
         list.add(AudioDataProviderModel(
-            audioId = 3,
+            audioId = 3L,
             audioName = "name3",
             audioSize = 2500,
             album = "album3",
@@ -43,5 +42,11 @@ internal object FakeNotEmptyAudioContentProvider: IAudioContentProviderDataManag
             audioDuration = 1500
         ))
         onDataChanges?.invoke()
+    }
+
+    fun removeChangesIfExist(){
+        list.firstOrNull { it.audioId == 3L }?.let {
+            list.remove(it)
+        }
     }
 }

@@ -26,7 +26,7 @@ class AudioDatabaseProviderImplTest {
             notify = null
             noTifyPlaylistWithSongsList = null
         }
-        val fakePlaylist = FakePlayListDao(fakeAudio).apply {
+        val fakePlaylist = FakePlayListDao.getInstance(fakeAudio).apply {
             notify = null
             notifyCrossRefChanges = null
         }

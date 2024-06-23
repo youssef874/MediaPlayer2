@@ -10,7 +10,8 @@ import kotlinx.coroutines.flow.flow
 
 internal object FakeAudioDao: AudioDao {
 
-    private val dataList = mutableListOf<AudioEntity>()
+    private val _dataList = mutableListOf<AudioEntity>()
+    private val dataList get() =  _dataList.toList()
     var notify: (suspend ()->Unit)? = null
     private val playlistWithSongsList = mutableListOf<PlaylistWithSongs>()
     var noTifyPlaylistWithSongsList: (suspend (PlaylistWithSongs)->Unit)? = null
@@ -42,7 +43,8 @@ internal object FakeAudioDao: AudioDao {
     }
 
     override suspend fun deleteAll() {
-        dataList.clear()
+        playlistWithSongsList.clear()
+        _dataList.clear()
     }
 
     override suspend fun changeAudioFavoriteStatus(isFavorite: Boolean, audioId: Long): Int {
@@ -50,7 +52,7 @@ internal object FakeAudioDao: AudioDao {
         val newAudioEntity = audioEntity?.copy(isFavorite = isFavorite)
         audioEntity?.let {
             if (newAudioEntity != null) {
-                dataList[dataList.indexOf(it)] = newAudioEntity
+                _dataList[dataList.indexOf(it)] = newAudioEntity
             }
             return 1
         }
@@ -101,14 +103,14 @@ internal object FakeAudioDao: AudioDao {
 
          val id = generateId()
         val audioEntity = data.copy(id = id)
-        dataList.add(audioEntity)
+        _dataList.add(audioEntity)
         notify?.invoke()
         return id
     }
 
     override suspend fun update(data: AudioEntity): Int {
         dataList.firstOrNull { it.id == data.id }?.let {
-            dataList[dataList.indexOf(it)] = data
+            _dataList[dataList.indexOf(it)] = data
             notify?.invoke()
             return 1
         }
@@ -117,7 +119,7 @@ internal object FakeAudioDao: AudioDao {
 
     override suspend fun delete(data: AudioEntity) {
         dataList.firstOrNull { it.id == data.id }?.let {
-            dataList.remove(it)
+            _dataList.remove(it)
             notify?.invoke()
         }
     }
@@ -126,8 +128,9 @@ internal object FakeAudioDao: AudioDao {
         return if (dataList.isEmpty()){
             0L
         }else{
-            dataList.sortBy { it.id }
-            dataList.last().id+1
+            val list = dataList.toMutableList()
+            list.sortBy { it.id }
+            list.last().id+1
         }
     }
 }

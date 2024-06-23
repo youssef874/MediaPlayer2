@@ -31,6 +31,9 @@ internal class PlayListDatabaseDataProviderImpl(
             logLevel = MPLoggerLevel.INFO
         )
         withContext(dispatcher) {
+            if (audioDao.getById(audioId) == null){
+                throw NoSuchElementException("no audio by id: $audioId found please add one before attache it to some playlist")
+            }
             val playlistWithSongs = audioDao.getListOfAudioForPlayList(playListEntity.id)
             playlistWithSongs?.songs?.firstOrNull { it.id == audioId }?.let {
                 throw AddAudioToPlayListThatAlreadyExist(audioId, playListEntity.name)

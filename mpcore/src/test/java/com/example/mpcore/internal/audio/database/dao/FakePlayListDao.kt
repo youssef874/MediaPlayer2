@@ -2,12 +2,12 @@ package com.example.mpcore.internal.audio.database.dao
 
 import com.example.mpcore.audio.internal.data.database.IPlayListDao
 import com.example.mpcore.audio.internal.data.database.model.PlayListEntity
-import com.example.mpstorage.database.internal.entity.PlaylistSongCrossRef
 import com.example.mpcore.audio.internal.data.database.model.SongWithPlaylists
+import com.example.mpstorage.database.internal.entity.PlaylistSongCrossRef
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-internal class FakePlayListDao(
+internal class FakePlayListDao private constructor(
     private val fakeAudioDao: FakeAudioDao
 ): IPlayListDao {
     
@@ -67,6 +67,7 @@ internal class FakePlayListDao(
     }
 
     override suspend fun deleteAll() {
+        songWithPlaylistsData.clear()
         dataList.clear()
     }
 
@@ -126,6 +127,17 @@ internal class FakePlayListDao(
         }else{
             dataList.sortBy { it.id }
             dataList.last().id+1
+        }
+    }
+
+    companion object{
+
+        private var INSTANCE: FakePlayListDao? = null
+
+        fun getInstance(audioDao: FakeAudioDao): FakePlayListDao = INSTANCE?: synchronized(this){
+            val instance = FakePlayListDao(audioDao)
+            INSTANCE = instance
+            instance
         }
     }
 }

@@ -5,11 +5,11 @@ import androidx.room.Entity
 import com.example.mpcore.audio.internal.data.database.model.AudioEntity
 import com.example.mpcore.audio.internal.data.database.model.PlayListEntity
 
-@Entity( primaryKeys = [PlayListEntity.ID,AudioEntity.ID])
+@Entity( primaryKeys = [PlaylistSongCrossRef.PLAY_LIST_ID,PlaylistSongCrossRef.SONG_ID])
 data class PlaylistSongCrossRef(
-    @ColumnInfo(name = PlayListEntity.ID, defaultValue = "0")
+    @ColumnInfo(name = PLAY_LIST_ID, defaultValue = "0")
     val playListId: Long = 0L,
-    @ColumnInfo(name = AudioEntity.ID, defaultValue = "0")
+    @ColumnInfo(name = SONG_ID, defaultValue = "0")
     val songId: Long = 0L
 ){
 

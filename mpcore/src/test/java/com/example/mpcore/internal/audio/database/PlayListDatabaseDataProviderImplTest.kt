@@ -7,7 +7,9 @@ import com.example.mpcore.audio.internal.data.database.model.AudioEntity
 import com.example.mpcore.internal.audio.database.dao.FakeAudioDao
 import com.example.mpcore.internal.audio.database.dao.FakePlayListDao
 import com.example.mpcore.audio.internal.data.database.model.PlayListEntity
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import org.junit.Before
@@ -27,12 +29,15 @@ class PlayListDatabaseDataProviderImplTest {
             notify = null
             noTifyPlaylistWithSongsList = null
         }
-        val fakePlaylist = FakePlayListDao(fakeAudio).apply {
+        val fakePlaylist = FakePlayListDao.getInstance(fakeAudio).apply {
             notify = null
             notifyCrossRefChanges = null
         }
         audioDatabaseProviderImpl = AudioDatabaseProviderImpl(fakeAudio)
         playListDatabaseDataProviderImpl = PlayListDatabaseDataProviderImpl(audioDao = fakeAudio, playListDao = fakePlaylist)
+        CoroutineScope(Dispatchers.IO).launch {
+            playListDatabaseDataProviderImpl.deleteAll()
+        }
     }
 
     @Test
