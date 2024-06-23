@@ -9,11 +9,13 @@ import android.provider.MediaStore
 import com.example.mpcore.audio.internal.data.dataprovider.model.AudioDataProviderModel
 import com.example.mpcore.logger.api.data.MPLoggerLevel
 import com.example.mpcore.logger.internal.MPLoggerConfiguration
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 internal class InternalStorageExtractorImp(
-    private val contentResolver: ContentResolver
+    private val contentResolver: ContentResolver,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : IInternalStorageExtractor {
 
     companion object {
@@ -29,7 +31,7 @@ internal class InternalStorageExtractorImp(
             "start loading all audio",
             MPLoggerLevel.INFO
         )
-        return withContext(Dispatchers.IO){
+        return withContext(dispatcher){
             val collection = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 MediaStore.Audio.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
             } else {

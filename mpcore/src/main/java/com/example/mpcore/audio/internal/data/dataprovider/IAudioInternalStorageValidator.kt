@@ -3,7 +3,7 @@ package com.example.mpcore.audio.internal.data.dataprovider
 /**
  * This abstract of validating access to the internal storage
  */
-internal interface IAudioInternalStorageValidator {
+internal fun interface IAudioInternalStorageValidator {
 
     /**
      * This will check for any permission needed to access
