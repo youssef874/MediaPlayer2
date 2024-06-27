@@ -4,14 +4,14 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
-import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import com.example.mpcore.logger.api.data.MPLoggerLevel
 import com.example.mpcore.logger.internal.MPLoggerConfiguration
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
@@ -19,8 +19,9 @@ import kotlinx.coroutines.withContext
  * An [Long] implementation for [IDataStoreModifier]
  */
 internal class LongDataStoreModifierImpl(
-    dataStore: DataStore<Preferences>
-): BaseDataStoreImpl(dataStore), IDataStoreModifier<Long> {
+    dataStore: DataStore<Preferences>,
+    dispatcher: CoroutineDispatcher = Dispatchers.IO
+): BaseDataStoreImpl(dataStore,dispatcher), IDataStoreModifier<Long> {
 
     companion object{
         private const val CLASS_NAME = "LongDataStoreModifierImpl"
@@ -28,7 +29,7 @@ internal class LongDataStoreModifierImpl(
     }
 
     override suspend fun put(key: String, data: Long) {
-        withContext(Dispatchers.IO){
+        withContext(dispatcher){
             MPLoggerConfiguration.DefaultBuilder().log(
                 className = CLASS_NAME,
                 tag = TAG,
@@ -36,9 +37,8 @@ internal class LongDataStoreModifierImpl(
                 logLevel = MPLoggerLevel.DEBUG,
                 msg = "key: $key, value: $data"
             )
-            val longPreferenceKey = longPreferencesKey(key)
             dataStore.edit {
-                it[longPreferenceKey] = data
+                it[longPreferencesKey(key)] = data
             }
         }
     }
@@ -58,11 +58,11 @@ internal class LongDataStoreModifierImpl(
             }catch (e: ClassCastException){
                 defaultValue
             }
-        }
+        }.flowOn(dispatcher)
     }
 
     override suspend fun remove(key: String) {
-        withContext(Dispatchers.IO){
+        withContext(dispatcher){
             dataStore.edit {pref->
                 MPLoggerConfiguration.DefaultBuilder().log(
                     className = CLASS_NAME,
@@ -78,7 +78,7 @@ internal class LongDataStoreModifierImpl(
     }
 
     override suspend fun contains(key: String): Boolean {
-        return withContext(Dispatchers.IO){
+        return withContext(dispatcher){
             val longPreferenceKey = longPreferencesKey(key)
             dataStore.data.map {
                 if (it.asMap().isEmpty()){

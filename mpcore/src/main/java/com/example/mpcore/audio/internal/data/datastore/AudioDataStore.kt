@@ -9,8 +9,6 @@ internal class AudioDataStore(
 
     companion object{
         const val FILE_NAME = "mp_datastore"
-        private const val CLASS_NAME = "AudioDataStore"
-        private const val TAG = "DATA_STORE"
     }
 
     override fun getIntDataStoreModifier(): IDataStoreModifier<Int> {

@@ -4,13 +4,9 @@ import com.example.mpcore.audio.api.data.model.RepeatMode
 import com.example.mpcore.audio.internal.data.datastore.data.AudioDataStoreModel
 import com.example.mpcore.logger.api.data.MPLoggerLevel
 import com.example.mpcore.logger.internal.MPLoggerConfiguration
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.single
-import kotlinx.coroutines.withContext
 
 internal class AudioDatastoreDataProviderImpl(
     audioDataStore: IAudioDataStore
