@@ -11,7 +11,6 @@ import com.example.mpcore.audio.internal.data.datastore.IAudioDatastoreManger
 import com.example.mpcore.logger.api.data.MPLoggerLevel
 import com.example.mpcore.logger.internal.MPLoggerConfiguration
 
-//TODO review mpSynchronization module unit test
 internal class AudioContentProviderWithDatabaseSynchronization(
     private val audioContentProviderDataManager: IAudioContentProviderDataManager,
     private val audioDatastoreManger: IAudioDatastoreManger,

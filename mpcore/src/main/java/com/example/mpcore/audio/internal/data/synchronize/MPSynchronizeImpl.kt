@@ -3,11 +3,13 @@ package com.example.mpcore.audio.internal.data.synchronize
 import android.content.Context
 import com.example.mpcore.audio.internal.data.synchronize.factory.AudioContentProviderWithDatabaseSynchronizationFactory
 import kotlinx.coroutines.CompletableDeferred
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 internal class MPSynchronizeImpl(
-    private val synchronizeManager: ISynchronizationManager
+    private val synchronizeManager: ISynchronizationManager,
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : IMPSynchronize {
 
     private var _state:@SynchronizationState String = SynchronizationState.NONE
@@ -39,7 +41,7 @@ internal class MPSynchronizeImpl(
             }
         )
 
-        withContext(Dispatchers.IO){
+        withContext(dispatcher){
             synchronizeManager.synchronize(
                 AudioContentProviderWithDatabaseSynchronizationFactory.create(context)
             )

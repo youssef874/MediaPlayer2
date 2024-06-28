@@ -93,7 +93,6 @@ internal class InternalPlayListDataManagerImpl(
                 logLevel = MPLoggerLevel.ERROR,
                 msg = "message: ${e.message}"
             )
-            //TODO add it to documentation
             return MPApiResult.Error(MPApiError(DataCode.ELEMENT_NOT_FOUND,"$audioId not found add it before attache it to playlist"))
         }
     }

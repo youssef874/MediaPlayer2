@@ -63,7 +63,7 @@ object MPAudioDataApi {
      * @param audioId: the song to be added
      * @param mpPlayList: the playlist to be added to
      * @return [MPApiResult] success if the operation we success otherwise will return error
-     * [DataCode.AUDIO_ALREADY_ATTACHED_TO_PLAYLIST] or [DataCode.SQL_FAILED]
+     * [DataCode.AUDIO_ALREADY_ATTACHED_TO_PLAYLIST] or [DataCode.SQL_FAILED] or [DataCode.ELEMENT_NOT_FOUND]
      */
     suspend fun attachPlayListToAudio(audioId: Long, mpPlayList: MPPlayList): MPApiResult<Unit>{
         return playListProvider.attachPlayListToAudio(audioId, mpPlayList)
